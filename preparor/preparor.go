@@ -10,11 +10,11 @@ import (
 type Preparor struct {
 }
 
-func (p *Preparor) Process(path , dst string , minLabelCount , minLabelNameSize int) {
+func (p *Preparor) Process(path , dst string , minLabelCount , minLabelNameSize int , trainSize float64) {
 	
 	filepaths := p.getFilePaths(path)
 	labels := p.getLabels(filepaths , minLabelCount , minLabelNameSize)
-	dstPaths := p.getDstPath(dst , labels , filepaths)
+	dstPaths := p.getDstPath(dst , labels , filepaths , trainSize)
 
 	for _ , path := range dstPaths {
 		fmt.Println(path)
@@ -99,19 +99,37 @@ func (p *Preparor) getFilePaths(path string) [] string  {
 	return paths[1 : len(paths)]
 }
 
-func (p *Preparor) getDstPath(dst string , labels , paths []string) []string {
+func (p *Preparor) getDstPath(dst string , labels , paths []string , trainSize float64) []string {
 
 	labelDstPath := [] string {}
+	trainIndex := (int(trainSize * 100 )* len(paths))  / 100
+	valTestSize := 1.0 - trainSize
+	valSize := valTestSize / 2
+
+	valIndex := ((int(valSize * 100 )* len(paths))  / 100) + trainIndex
 
 	var pathFound bool
+	labelType := ""
 
-	for _ , path := range paths {
+	for index  , path := range paths {
+
+		if index < trainIndex {
+			labelType = "train"
+		} else if index < valIndex {
+			labelType = "val"
+		} else {
+			labelType = "test"
+		}
+
 		pathFound = false
 		for _ , label := range labels {
 			filename := p.getFileFrom(path)
 
 			if strings.Contains(filename, label) {
-				labelDstPath = append(labelDstPath ,  dst + string(os.PathSeparator) + label + string(os.PathSeparator) + filename )
+				labelDst := dst + string(os.PathSeparator) +  labelType // create dir here
+				labelDst += string(os.PathSeparator) + label 
+
+				labelDstPath = append(labelDstPath ,  labelDst + string(os.PathSeparator) +  filename )
 				pathFound = true
 				break
 
