@@ -59,3 +59,32 @@ func common(str1 , str2 string) string {
 
 }
 
+
+
+func contains(char rune , dataList [] rune) bool {
+
+
+	for _ , dataChar := range dataList {
+		if char == dataChar {
+			return true
+		}
+	}
+
+
+	return false
+}
+
+func cleanString(str string) string {
+
+	result := ""
+
+	ignoreChars := [] rune {',' , '.' , '!' , '-' , '?' }
+
+	for _ , char := range str {
+		if !contains(char , ignoreChars)  {
+			result += string(char)
+		}
+	}
+
+	return result
+}

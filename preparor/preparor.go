@@ -65,6 +65,11 @@ func (p *Preparor) getLabels(filepaths []string, minLabelCount , minLabelNameSiz
 		labels = append(labels , possibleLabel)
 	}
 
+
+	for i := 0 ; i < len(labels) ; i++ {
+		labels[i] = cleanString(labels[i])
+	}
+
 	return labels
 }
 
