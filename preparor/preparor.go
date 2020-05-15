@@ -10,13 +10,14 @@ import (
 type Preparor struct {
 }
 
-func (p *Preparor) Process(path string , minLabelCount , minLabelNameSize int) {
+func (p *Preparor) Process(path , dst string , minLabelCount , minLabelNameSize int) {
 	
 	filepaths := p.getFilePaths(path)
 	labels := p.getLabels(filepaths , minLabelCount , minLabelNameSize)
+	dstPaths := p.getDstPath(dst , labels , filepaths)
 
-	for index , label  := range labels {
-		fmt.Printf("%d = %s\n" , index , label)
+	for _ , path := range dstPaths {
+		fmt.Println(path)
 	}
 
 
@@ -96,6 +97,36 @@ func (p *Preparor) getFilePaths(path string) [] string  {
 	}
 
 	return paths[1 : len(paths)]
+}
+
+func (p *Preparor) getDstPath(dst string , labels , paths []string) []string {
+
+	labelDstPath := [] string {}
+
+	var pathFound bool
+
+	for _ , path := range paths {
+		pathFound = false
+		for _ , label := range labels {
+			filename := p.getFileFrom(path)
+
+			if strings.Contains(filename, label) {
+				labelDstPath = append(labelDstPath ,  dst + string(os.PathSeparator) + label + string(os.PathSeparator) + filename )
+				pathFound = true
+				break
+
+			}
+		}
+
+		if !pathFound {
+			fmt.Printf("Could not get label for %s\n" , path)
+		}
+
+
+	}
+
+	return labelDstPath
+
 }
 
 func NewPreparor() *Preparor {
