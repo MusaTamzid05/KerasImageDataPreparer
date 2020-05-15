@@ -7,5 +7,5 @@ import (
 func main() {
 
 	dataPreparor := preparor.NewPreparor()
-	dataPreparor.Process("/home/musa/data/images/cat_and_dogs/dogs-vs-cats/train")
+	dataPreparor.Process("/home/musa/data/images/cat_and_dogs/dogs-vs-cats/train" , 50 , 2)
 }
