@@ -134,3 +134,13 @@ func Exists(path string) bool {
 func MakeDir(path string) error {
 	return os.Mkdir(path, 0755)
 }
+
+func getKeysFrom(mapData map[string]int) []string {
+	keys := make([]string, 0, len(mapData))
+
+	for key := range mapData {
+		keys = append(keys, key)
+	}
+
+	return keys
+}
